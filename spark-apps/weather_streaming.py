@@ -8,8 +8,17 @@ import math
 # ============================================
 spark = SparkSession.builder \
     .appName("CasablancaWeatherStreamProcessing") \
-    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0") \
+    .config("spark.jars.packages",
+            "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,"
+            "org.apache.hadoop:hadoop-aws:3.3.4,"
+            "com.amazonaws:aws-java-sdk-bundle:1.12.262") \
+    .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
+    .config("spark.hadoop.fs.s3a.access.key", "admin") \
+    .config("spark.hadoop.fs.s3a.secret.key", "minioadmin") \
+    .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+    .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
     .getOrCreate()
+
 
 spark.sparkContext.setLogLevel("WARN")
 
@@ -162,10 +171,10 @@ query_json = enriched_weather \
     .writeStream \
     .outputMode("append") \
     .format("json") \
-    .option("path", "/opt/spark-output/weather_enriched") \
-    .option("checkpointLocation", "/opt/spark-output/checkpoint_enriched") \
+    .option("path", "s3a://weather-spark-streaming/weather_enriched") \
+    .option("checkpointLocation", "s3a://weather-spark-streaming/checkpoints/enriched") \
+    .option("pretty","true")\
     .start()
-
 
 
 # ============================================
@@ -186,8 +195,9 @@ query_alerts = alerts_stream \
     .writeStream \
     .outputMode("append") \
     .format("json") \
-    .option("path", "/opt/spark-output/weather_alerts") \
-    .option("checkpointLocation", "/opt/spark-output/checkpoint_alerts") \
+    .option("path", "s3a://weather-spark-streaming/weather_alerts") \
+    .option("checkpointLocation", "s3a://weather-spark-streaming/checkpoints_alerts") \
+    .option("pretty","true")\
     .start()
 
 # ============================================
