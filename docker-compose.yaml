@@ -11,11 +11,19 @@ services:
     image: confluentinc/cp-kafka:7.4.0
     depends_on: [zookeeper]
     ports:
-      - "9092:9092"
+     - "9092:9092"   # Kafka
+     - "9101:9101"   # JMX standard (optionnel si tu n'utilises pas JConsole)
+     - "7071:7071"   # Prometheus Java agent
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: kafka
+    volumes:
+    - ./monitoring:/etc/jmx
+    command: >
+       bash -c "KAFKA_OPTS='-javaagent:/etc/jmx/jmx_prometheus_javaagent-1.5.0.jar=7071:/etc/jmx/kafka-jmx-config.yml' /etc/confluent/docker/run"
 
   nifi:
     image: apache/nifi:1.27.0
@@ -81,6 +89,33 @@ services:
       - ./spark-apps:/opt/spark/work-dir
       - ./spark-output:/opt/spark-output 
     command: bash -c "sleep infinity"  
+
+
+   
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - default
+
+
 volumes:
   minio-data:    
   nifi_conf:
