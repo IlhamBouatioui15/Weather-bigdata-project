@@ -21,6 +21,7 @@ The entire system is **fully containerized using Docker**.
 * Apache Spark (Streaming)
 * MinIO (S3-compatible Data Lake)
 * Apache Airflow
+* Streamlit (Interactive Dashboards & Visualization)
 * Prometheus
 * Grafana
 * Docker & Docker Compose
@@ -79,6 +80,7 @@ This will start:
 * Spark
 * MinIO
 * Airflow
+* Streamlit (for dashboards)
 * Prometheus
 * Grafana
 
@@ -110,4 +112,19 @@ docker ps
 
 ---
 
+## Data Visualization with Streamlit
+
+Streamlit is used to create interactive dashboards for real-time weather data analysis. Users can:
+
+* Explore raw and processed weather data
+
+* View time series trends, charts, and metrics
+
+* Filter data by location, date, or weather parameter
+
+* Gain actionable insights with interactive visualization components
+
+
+Then open your browser at http://localhost:8501
+ to explore the dashboards.
 
