@@ -21,10 +21,19 @@ with DAG(
 ) as dag:
 
     # 1️⃣ Déclencher NiFi flow via REST API
-    run_nifi = BashOperator(
-        task_id='run_nifi_flow',
-        bash_command="""curl -X POST 'http://nifi:8080/nifi-api/flow/process-groups/0b1024d0-019a-1000-df8a-68baa1426991/run-status' -H "Content-Type: application/json" -d '{"state":"RUNNING"}'"""
+    run_nifi_flow = BashOperator(
+        task_id="run_nifi_flow",
+        bash_command="""
+        curl -X PUT http://bigdataproject-nifi-1:8080/nifi-api/flow/process-groups/0b1024d0-019a-1000-df8a-68baa1426991 \
+        -H "Content-Type: application/json" \
+        -d '{
+        "id": "0b1024d0-019a-1000-df8a-68baa1426991",
+        "state": "RUNNING"
+        }'
+
+        """
     )
+
 
     # 2️⃣ Lancer Spark Streaming
     run_spark = BashOperator(

@@ -1,0 +1,2 @@
+# superset
+Creation de user et password : docker exec -it superset superset fab create-admin

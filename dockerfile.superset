@@ -1,0 +1,25 @@
+FROM apache/superset:latest
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+USER superset
+
+ENV PYTHONNOUSERSITE=1
+ENV PIP_NO_USER=1
+
+RUN . /app/.venv/bin/activate && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    duckdb==0.9.2 \
+    duckdb-engine==0.9.5 \
+    pyarrow==15.0.0 \
+    s3fs==2024.6.1
+
+USER root
+RUN mkdir -p /data && chown -R superset:superset /data
+USER superset
