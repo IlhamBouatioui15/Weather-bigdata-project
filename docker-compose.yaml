@@ -183,32 +183,6 @@ services:
     restart: always
   
 
-  superset:
-    build:
-      context: .
-      dockerfile: dockerfile.superset
-    container_name: superset
-    environment:
-      SUPERSET_SECRET_KEY: change_this_to_secure_key_123456789
-    ports:
-      - "8088:8088"
-    volumes:
-      - ./duckdb-data:/data
-    depends_on:
-      - minio
-    command: >
-      bash -c "
-      superset db upgrade &&
-      superset fab create-admin
-        --username admin
-        --firstname Admin
-        --lastname User
-        --email admin@superset.com
-        --password admin || true &&
-      superset init &&
-      superset run -h 0.0.0.0 -p 8088
-      "
-    restart: unless-stopped
 
   streamlit:
     build:

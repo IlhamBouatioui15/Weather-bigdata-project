@@ -22,7 +22,7 @@ access_key = os.environ.get("MINIO_ACCESS_KEY", "admin")
 secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
 endpoint_url = os.environ.get("MINIO_ENDPOINT", "http://minio:9000")
 
-st.title("🌤️ Dashboard Weather Data - MinIO")
+st.title("🌤️ Dashboard Weather Data ")
 st.markdown("---")
 
 # =================================================
@@ -39,9 +39,6 @@ def get_s3_filesystem():
     )
     return fs
 
-# =================================================
-# CHARGEMENT DES DONNÉES JSON
-# =================================================
 # =================================================
 # CHARGEMENT DES DONNÉES JSON
 # =================================================
@@ -188,12 +185,9 @@ st.success(f"✅ {len(df)} enregistrements chargés depuis {len(df.columns)} col
 # =================================================
 # MÉTRIQUES PRINCIPALES
 # =================================================
-# =================================================
-# MÉTRIQUES PRINCIPALES
-# =================================================
-st.subheader("📊 Aperçu des données")
+st.subheader(" Aperçu des données")
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3= st.columns(3)
 
 with col1:
     st.metric("📝 Enregistrements", f"{len(df):,}")
@@ -211,23 +205,7 @@ with col2:
 with col3:
     st.metric("📋 Colonnes", len(df.columns))
 
-with col4:
-    # ===== CORRECTION ICI =====
-    if 'timestamp_dt' in df.columns and df['timestamp_dt'].notna().any():
-        try:
-            min_date = df['timestamp_dt'].min()
-            max_date = df['timestamp_dt'].max()
-            
-            # Vérifier que ce sont bien des datetime
-            if isinstance(min_date, pd.Timestamp) and isinstance(max_date, pd.Timestamp):
-                date_range = f"{min_date.strftime('%d/%m %H:%M')} - {max_date.strftime('%d/%m %H:%M')}"
-                st.metric("📅 Période", date_range)
-            else:
-                st.metric("📅 Période", "Format invalide")
-        except:
-            st.metric("📅 Période", "Erreur conversion")
-    else:
-        st.metric("📅 Période", "N/A")
+
 
 # =================================================
 # COLONNES DISPONIBLES
@@ -351,7 +329,7 @@ if has_temp:
 # GRAPHIQUE 3: Statistiques par ville
 if has_temp and has_city:
     st.markdown("---")
-    st.markdown("### 📊 Statistiques par ville")
+    st.markdown("### 📊 Statistiques ")
     
     city_stats = df.groupby('city_name')['temperature'].agg([
         ('Moyenne', 'mean'),
@@ -508,6 +486,6 @@ with col2:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray;'>
-    🌤️ Weather Data Dashboard - Powered by Streamlit & MinIO
+    🌤️ Weather Data Dashboard
 </div>
 """, unsafe_allow_html=True)
