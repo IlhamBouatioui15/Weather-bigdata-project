@@ -1,0 +1,7 @@
+airflow/logs
+airflow/plugins
+airflow/dags
+spark-output
+monitoring
+.prometheus
+.git

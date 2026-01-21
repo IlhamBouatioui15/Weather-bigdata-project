@@ -1,0 +1,21 @@
+# Logs Airflow
+airflow/logs/
+airflow/unittests.db
+
+# Fichiers temporaires Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+plugins
+# Environnement virtuel
+.venv/
+bootstrap.conf
+# Docker
+*.env
+
+# ----------------------
+# Ivy / Spark dependencies (optionnel)
+# ----------------------
+.ivy2/
